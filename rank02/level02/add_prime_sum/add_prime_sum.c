@@ -7,12 +7,20 @@ int ft_atoi(char *argv)
     int i = 0;
     int num = 0;
 
-    while ((argv[i] >= '0' && argv[i] <= '9') && argv[i])
+    while (argv[i])
     {
         num = num * 10 + (argv[i] - '0');
         i++;
     }
     return (num);
+}
+
+void ptnbr(int n)
+{
+    if (n >= 10)
+        ptnbr(n / 10);
+    char c = (n % 10) + '0';
+    write(1, &c, 1);
 }
 
 int is_prime(int num)
@@ -41,14 +49,6 @@ int primesum(int num)
         i++;
     }
     return (sum);
-}
-
-void ptnbr(int n)
-{
-    if (n >= 10)
-        ptnbr(n / 10);
-    char c = (n % 10) + '0';
-    write(1, &c, 1);
 }
 
 int main(int argc, char **argv)

@@ -1,0 +1,1 @@
+This was harder, nearl 2 hours and I did have to check my atoi base and rev_wstr. But i only needed minimal correction. This is good progress.

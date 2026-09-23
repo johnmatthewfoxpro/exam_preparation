@@ -5,74 +5,71 @@
 
 #include <string.h>
 #include <errno.h>
-#include <stdlib.h>
-#include <unistd.h>
 #include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
 
-void ft_filter(char *buffer, const char *target)
+void filter(char *string, char *s)
 {
-    int i = 0;
-    int target_len = strlen(target);
-    int j, k;
+	int i = 0;
+	int j = 0;
+	int len = strlen(s);
 
-    while (buffer[i])
-    {
-        j = 0;
-        while (target[j] && (buffer[i + j] == target[j]))
-            j++;
-
-        if (j == target_len)
-        {
-            k = 0;
-            while (k < target_len)
-            {
-                write(1, "*", 1);
-                k++;
-            }
-            i += target_len;
-        }
-        else
-        {
-            write(1, &buffer[i], 1);
-            i++;
-        }
-    }
+	while (string[i])
+	{
+		j = 0;
+		while (string[i+j] == s[j])
+			j++;
+		if (j == len)
+		{
+			j = 0;
+			while (s[j])
+			{
+				string[i] = '*';
+				i++;
+				j++;
+			}
+		}
+		else
+			i++;
+	}
+	printf("%s", string);
 }
 
 int main(int argc, char **argv)
 {
-	if (argc != 2 || argv[1][0] == '\0')
-	 return (1);
+		if (argc != 2 || argv[1][0] == '\0')
+		return (1);
 
-    char temp[BUFFER_SIZE];
-    char *result = NULL;
-    char *buffer;
-    int total_read = 0;
-    ssize_t bytes;
+	char 	buffer[BUFFER_SIZE];
+	char	*result = NULL;
+	char 	*temp;
+	int		total = 0;
+	ssize_t bytes;
 
-    while ((bytes = read(0, temp, BUFFER_SIZE)) > 0)
-    {
-        buffer = realloc(result, total_read + bytes + 1);
-        if (!buffer)
-        {
-            free(result);
-            perror("realloc");
-            return 1;
-        }
-
-        result = buffer;
-        memmove(result + total_read, temp, bytes);
-        total_read += bytes;
-        result[total_read] = '\0';
-    }
-    if (bytes < 0)
-    {
-        perror("read");
-        free(result);
-        return 1;
-    }
-    if (!result)
-        return 0;
-    ft_filter(result, argv[1]);
-    free(result);
+	while ((bytes = read(0, buffer, BUFFER_SIZE)) > 0)
+	{
+		temp = realloc(result, total + bytes + 1);
+		if (!temp)
+		{
+			free(result);
+			perror("realloc");
+			return (1);
+		}
+		result = temp;
+		memmove(result + total, buffer, bytes);
+		total += bytes;
+		result[total] = '\0';
+	}
+	if (!result)
+		return (0);
+	if (bytes < 0)
+	{
+		free(result);
+		perror("read");
+		return(1);
+	}
+	filter(result, argv[1]);
+	free(result);
+	return (0);
 }
